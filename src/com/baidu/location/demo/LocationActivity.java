@@ -1,5 +1,9 @@
 package com.baidu.location.demo;
 
+import java.util.Random;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 import com.baidu.baidulocationdemo.R;
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
@@ -28,6 +32,10 @@ public class LocationActivity extends Activity {
 	private SaveSDCardService saveSDCardService;
 	private TextView LocationResult;
 	private Button startLocation;
+	private ExecutorService cachedThreadPool;
+	private double lastKnowLat=0;
+	private double lastKnowLon=0;
+	private StringBuffer sb,sb1;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +45,9 @@ public class LocationActivity extends Activity {
 		LocationResult = (TextView) findViewById(R.id.textView1);
 		LocationResult.setMovementMethod(ScrollingMovementMethod.getInstance());
 		startLocation = (Button) findViewById(R.id.addfence);
-
+		
+		cachedThreadPool = Executors.newCachedThreadPool();
+		
 	}
 	
 	
@@ -75,6 +85,7 @@ public class LocationActivity extends Activity {
 		locationService.registerListener(mListener);
 		//注册监听
 		saveSDCardService = ((LocationApplication) getApplication()).saveSDCardService;
+		//获取saveSDCardService实例
 		
 		int type = getIntent().getIntExtra("from", 0);
 		if (type == 0) {
@@ -109,8 +120,8 @@ public class LocationActivity extends Activity {
 		@Override
 		public void onReceiveLocation(BDLocation location) {
 			if (null != location && location.getLocType() != BDLocation.TypeServerError) {
-				StringBuffer sb = new StringBuffer(256);
-				StringBuffer sb1 = new StringBuffer(128);
+				sb = new StringBuffer(256);
+				sb1 = new StringBuffer(128);
 				sb.append("time : ");
 				/**
 				 * 时间也可以使用systemClock.elapsedRealtime()方法 获取的是自从开机以来，每次回调的时间；
@@ -182,11 +193,27 @@ public class LocationActivity extends Activity {
 				if(location.getLocType() == BDLocation.TypeServerError && location.getLocType() == BDLocation.TypeNetWorkException && location.getLocType() == BDLocation.TypeCriteriaException){
 					return ;
 				}
-				sb1.append("\t<wpt lat=\"30.63625\" lon=\"104.0736843\">\n");
-				sb1.append("\t\t<ele>495.2</ele>\n");
-				sb1.append("\t</wpt>\n");
-				
-				saveSDCardService.write(sb1.toString());
+
+				if(location.getLatitude() != lastKnowLat && location.getLongitude() != lastKnowLon){
+					sb1.append("\t<wpt lat=\""+location.getLatitude()+"\" lon=\""+location.getLongitude()+"\">\n");
+					if(location.getAltitude() < 1){
+						Random rad = new Random();
+						sb1.append("\t\t<ele>"+ (rad.nextInt(100)+300) +"</ele>\n");
+					} else{
+						sb1.append("\t\t<ele>"+location.getAltitude()+"</ele>\n");	
+					}
+					sb1.append("\t</wpt>\n");
+					
+					cachedThreadPool.execute(new Runnable() {
+						
+						@Override
+						public void run() {
+							saveSDCardService.write(sb1.toString());
+						}
+					});
+				}
+				lastKnowLat = location.getLatitude();
+				lastKnowLon = location.getLongitude();
 			}
 		}
 
