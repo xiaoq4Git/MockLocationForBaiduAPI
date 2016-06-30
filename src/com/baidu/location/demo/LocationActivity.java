@@ -5,6 +5,7 @@ import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.Poi;
 import com.baidu.location.service.LocationService;
+import com.baidu.location.service.SaveSDCardService;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -24,6 +25,7 @@ import android.widget.TextView;
  */
 public class LocationActivity extends Activity {
 	private LocationService locationService;
+	private SaveSDCardService saveSDCardService;
 	private TextView LocationResult;
 	private Button startLocation;
 
@@ -72,6 +74,8 @@ public class LocationActivity extends Activity {
 		//获取locationservice实例，建议应用中只初始化1个location实例，然后使用，可以参考其他示例的activity，都是通过此种方式获取locationservice实例的
 		locationService.registerListener(mListener);
 		//注册监听
+		saveSDCardService = ((LocationApplication) getApplication()).saveSDCardService;
+		
 		int type = getIntent().getIntExtra("from", 0);
 		if (type == 0) {
 			locationService.setLocationOption(locationService.getDefaultLocationClientOption());
@@ -106,6 +110,7 @@ public class LocationActivity extends Activity {
 		public void onReceiveLocation(BDLocation location) {
 			if (null != location && location.getLocType() != BDLocation.TypeServerError) {
 				StringBuffer sb = new StringBuffer(256);
+				StringBuffer sb1 = new StringBuffer(128);
 				sb.append("time : ");
 				/**
 				 * 时间也可以使用systemClock.elapsedRealtime()方法 获取的是自从开机以来，每次回调的时间；
@@ -173,6 +178,15 @@ public class LocationActivity extends Activity {
 					sb.append("无法获取有效定位依据导致定位失败，一般是由于手机的原因，处于飞行模式下一般会造成这种结果，可以试着重启手机");
 				}
 				logMsg(sb.toString());
+				
+				if(location.getLocType() == BDLocation.TypeServerError && location.getLocType() == BDLocation.TypeNetWorkException && location.getLocType() == BDLocation.TypeCriteriaException){
+					return ;
+				}
+				sb1.append("\t<wpt lat=\"30.63625\" lon=\"104.0736843\">\n");
+				sb1.append("\t\t<ele>495.2</ele>\n");
+				sb1.append("\t</wpt>\n");
+				
+				saveSDCardService.write(sb1.toString());
 			}
 		}
 

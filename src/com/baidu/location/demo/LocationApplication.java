@@ -2,6 +2,7 @@ package com.baidu.location.demo;
 
 
 import com.baidu.location.service.LocationService;
+import com.baidu.location.service.SaveSDCardService;
 import com.baidu.mapapi.SDKInitializer;
 
 import android.app.Application;
@@ -17,6 +18,7 @@ import android.os.Vibrator;
  */
 public class LocationApplication extends Application {
 	public LocationService locationService;
+	public SaveSDCardService saveSDCardService;
     public Vibrator mVibrator;
     @Override
     public void onCreate() {
@@ -24,6 +26,7 @@ public class LocationApplication extends Application {
         /***
          * 初始化定位sdk，建议在Application中创建
          */
+        saveSDCardService = new SaveSDCardService();
         locationService = new LocationService(getApplicationContext());
         mVibrator =(Vibrator)getApplicationContext().getSystemService(Service.VIBRATOR_SERVICE);
         SDKInitializer.initialize(getApplicationContext());  
