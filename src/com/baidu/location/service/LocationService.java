@@ -5,6 +5,7 @@ import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
 import com.baidu.location.LocationClientOption.LocationMode;
 import android.content.Context;
+import android.util.Log;
 
 /**
  * 
@@ -95,6 +96,7 @@ public class LocationService {
 	public void start(){
 		synchronized (objLock) {
 			if(client != null && !client.isStarted()){
+				Log.i("locationService", "client.start()");
 				client.start();
 			}
 		}

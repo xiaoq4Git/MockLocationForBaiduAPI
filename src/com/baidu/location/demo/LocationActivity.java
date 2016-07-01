@@ -2,55 +2,63 @@ package com.baidu.location.demo;
 
 import java.util.Random;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import com.baidu.baidulocationdemo.R;
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.Poi;
-import com.baidu.location.service.LocationService;
+import com.baidu.location.service.LoncationKeepAlive;
 import com.baidu.location.service.SaveSDCardService;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 
-
 /***
- * 单点定位示例，用来展示基本的定位结果，配置在LocationService.java中
- * 默认配置也可以在LocationService中修改
+ * 单点定位示例，用来展示基本的定位结果，配置在LocationService.java中 默认配置也可以在LocationService中修改
  * 
  * @author baidu
  *
  */
 public class LocationActivity extends Activity {
-	private LocationService locationService;
 	private SaveSDCardService saveSDCardService;
 	private TextView LocationResult;
 	private Button startLocation;
 	private ExecutorService cachedThreadPool;
-	private double lastKnowLat=0;
-	private double lastKnowLon=0;
-	private StringBuffer sb,sb1;
+	private double lastKnowLat = 0;
+	private double lastKnowLon = 0;
+	private StringBuffer sb, sb1;
+	public static final String ACTION_UPDATEUI = "action.updateUI";
+	UpdateUIBroadcastReceiver broadcastReceiver;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		Log.i("生命周期", "onCreate");
 		super.onCreate(savedInstanceState);
 		// -----------demo view config ------------
 		setContentView(R.layout.location);
 		LocationResult = (TextView) findViewById(R.id.textView1);
 		LocationResult.setMovementMethod(ScrollingMovementMethod.getInstance());
 		startLocation = (Button) findViewById(R.id.addfence);
-		
-		cachedThreadPool = Executors.newCachedThreadPool();
-		
 	}
-	
-	
+
+	private class UpdateUIBroadcastReceiver extends BroadcastReceiver {
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			LocationResult.setText(intent.getExtras().getString("count"));
+		}
+	}
+
 	/**
 	 * 显示请求字符串
 	 * 
@@ -65,54 +73,44 @@ public class LocationActivity extends Activity {
 		}
 	}
 
-	
 	/***
 	 * Stop location service
 	 */
 	@Override
 	protected void onStop() {
-		locationService.unregisterListener(mListener); //注销掉监听
-		locationService.stop(); //停止定位服务
+		// locationService.unregisterListener(mListener); //注销掉监听
+		// locationService.stop(); //停止定位服务
 		super.onStop();
 	}
 
 	@Override
 	protected void onStart() {
 		super.onStart();
-		// -----------location config ------------
-		locationService = ((LocationApplication) getApplication()).locationService;
-		//获取locationservice实例，建议应用中只初始化1个location实例，然后使用，可以参考其他示例的activity，都是通过此种方式获取locationservice实例的
-		locationService.registerListener(mListener);
-		//注册监听
-		saveSDCardService = ((LocationApplication) getApplication()).saveSDCardService;
-		//获取saveSDCardService实例
-		
-		int type = getIntent().getIntExtra("from", 0);
-		if (type == 0) {
-			locationService.setLocationOption(locationService.getDefaultLocationClientOption());
-		} else if (type == 1) {
-			locationService.setLocationOption(locationService.getOption());
-		}
-		startLocation.setOnClickListener(new OnClickListener() {
 
+		startLocation.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				Intent intent = new Intent(LocationActivity.this, LoncationKeepAlive.class);
 				if (startLocation.getText().toString().equals(getString(R.string.startlocation))) {
-					locationService.start();// 定位SDK
-											// start之后会默认发起一次定位请求，开发者无须判断isstart并主动调用request
 					startLocation.setText(getString(R.string.stoplocation));
+					intent.putExtra("FLAG_RUN", "START");
+					
+			        IntentFilter filter = new IntentFilter();  
+			        filter.addAction(ACTION_UPDATEUI);  
+			        broadcastReceiver = new UpdateUIBroadcastReceiver();  
+			        registerReceiver(broadcastReceiver, filter);
 				} else {
-					locationService.stop();
 					startLocation.setText(getString(R.string.startlocation));
+					intent.putExtra("FLAG_RUN", "STOP");
 				}
+				startService(intent);
 			}
 		});
 	}
 
-	
 	/*****
 	 * @see copy funtion to you project
-	 * 定位结果回调，重写onReceiveLocation方法，可以直接拷贝如下代码到自己工程中修改
+	 *      定位结果回调，重写onReceiveLocation方法，可以直接拷贝如下代码到自己工程中修改
 	 *
 	 */
 	private BDLocationListener mListener = new BDLocationListener() {
@@ -189,23 +187,26 @@ public class LocationActivity extends Activity {
 					sb.append("无法获取有效定位依据导致定位失败，一般是由于手机的原因，处于飞行模式下一般会造成这种结果，可以试着重启手机");
 				}
 				logMsg(sb.toString());
-				
-				if(location.getLocType() == BDLocation.TypeServerError && location.getLocType() == BDLocation.TypeNetWorkException && location.getLocType() == BDLocation.TypeCriteriaException){
-					return ;
+
+				if (location.getLocType() == BDLocation.TypeServerError
+						&& location.getLocType() == BDLocation.TypeNetWorkException
+						&& location.getLocType() == BDLocation.TypeCriteriaException) {
+					return;
 				}
 
-				if(location.getLatitude() != lastKnowLat && location.getLongitude() != lastKnowLon){
-					sb1.append("\t<wpt lat=\""+location.getLatitude()+"\" lon=\""+location.getLongitude()+"\">\n");
-					if(location.getAltitude() < 1){
+				if (location.getLatitude() != lastKnowLat && location.getLongitude() != lastKnowLon) {
+					sb1.append(
+							"\t<wpt lat=\"" + location.getLatitude() + "\" lon=\"" + location.getLongitude() + "\">\n");
+					if (location.getAltitude() < 1) {
 						Random rad = new Random();
-						sb1.append("\t\t<ele>"+ (rad.nextInt(100)+300) +"</ele>\n");
-					} else{
-						sb1.append("\t\t<ele>"+location.getAltitude()+"</ele>\n");	
+						sb1.append("\t\t<ele>" + (rad.nextInt(100) + 300) + "</ele>\n");
+					} else {
+						sb1.append("\t\t<ele>" + location.getAltitude() + "</ele>\n");
 					}
 					sb1.append("\t</wpt>\n");
-					
+
 					cachedThreadPool.execute(new Runnable() {
-						
+
 						@Override
 						public void run() {
 							saveSDCardService.write(sb1.toString());

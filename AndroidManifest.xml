@@ -8,7 +8,7 @@
         android:minSdkVersion="15"
         android:targetSdkVersion="23" />
 
-  <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" >
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" >
     </uses-permission>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" >
     </uses-permission>
@@ -36,8 +36,11 @@
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@android:style/Theme.Black"
-         >
+        android:theme="@android:style/Theme.Black" >
+        <service
+            android:name="com.baidu.location.service.LoncationKeepAlive"
+            android:enabled="true" >
+        </service>
         <service
             android:name="com.baidu.location.f"
             android:enabled="true"
@@ -46,10 +49,12 @@
                 <action android:name="com.baidu.location.service_v2.2" >
                 </action>
             </intent-filter>
-        </service>        
-                <meta-data
+        </service>
+
+        <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
-            android:value="X4YPFFbR1l9mKSHBZhX0sGMw2b6Wz3Yk" />  <!--http://lbsyun.baidu.com/apiconsole/key-->
+            android:value="X4YPFFbR1l9mKSHBZhX0sGMw2b6Wz3Yk" /> <!-- http://lbsyun.baidu.com/apiconsole/key -->
+
 
         <!-- meta-data需要写在application中 -->
         <activity
@@ -63,11 +68,16 @@
         </activity>
         <activity android:name="com.baidu.location.demo.LocationActivity" >
         </activity>
-        <activity android:name="com.baidu.location.demo.LocationOption"></activity>
-        <activity android:name="com.baidu.location.demo.LocationFilter"></activity>
-        <activity android:name="com.baidu.location.demo.NotifyActivity"></activity>
-        <activity android:name="com.baidu.location.demo.QuestActivity"></activity>
-        <activity android:name="com.baidu.location.demo.LocationAutoNotify"></activity>
+        <activity android:name="com.baidu.location.demo.LocationOption" >
+        </activity>
+        <activity android:name="com.baidu.location.demo.LocationFilter" >
+        </activity>
+        <activity android:name="com.baidu.location.demo.NotifyActivity" >
+        </activity>
+        <activity android:name="com.baidu.location.demo.QuestActivity" >
+        </activity>
+        <activity android:name="com.baidu.location.demo.LocationAutoNotify" >
+        </activity>
     </application>
 
 </manifest>
