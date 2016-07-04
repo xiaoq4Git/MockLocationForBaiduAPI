@@ -21,13 +21,10 @@ import android.widget.ListView;
 /***
  * 本类代码同定位业务本身无关，负责现实列表
  * 
- * @author baidu
  *
  */
 public class MainActivity extends Activity {
-	private final int SDK_PERMISSION_REQUEST = 127;
 	private ListView FunctionList;
-	private String permissionInfo;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -50,21 +47,15 @@ public class MainActivity extends Activity {
 				Class<?> TargetClass = null;
 				switch (arg2) {
 				case 0:
-					TargetClass = LocationActivity.class;
+					TargetClass = LocationRecordActivity.class;
 					break;
 				case 1:
-					TargetClass = LocationOption.class;
+					TargetClass = MockActivity.class;
 					break;
 				case 2:
-					TargetClass = LocationAutoNotify.class;
+					TargetClass = GpsReplayActivity.class;
 					break;
 				case 3:
-					TargetClass = LocationFilter.class;
-					break;
-				case 4:
-					TargetClass = NotifyActivity.class;
-					break;
-				case 5:
 					TargetClass = QuestActivity.class;
 					break;
 				default:
@@ -82,11 +73,9 @@ public class MainActivity extends Activity {
 	private List<String> getData() {
 
 		List<String> data = new ArrayList<String>();
-		data.add("基础定位功能");
-		data.add("配置定位参数");
-		data.add("自定义回调示例");
-		data.add("连续定位示例");
-		data.add("位置消息提醒");
+		data.add("定位打点模块");
+		data.add("轨迹配速模拟");
+		data.add("路径回放模块");
 		data.add("常见问题说明");
 
 		return data;

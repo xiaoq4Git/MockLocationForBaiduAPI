@@ -10,8 +10,8 @@ import com.baidu.baidulocationdemo.R;
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.Poi;
-import com.baidu.location.demo.LocationActivity;
 import com.baidu.location.demo.LocationApplication;
+import com.baidu.location.demo.LocationRecordActivity;
 
 import android.app.Notification;
 import android.app.PendingIntent;
@@ -63,7 +63,7 @@ public class LoncationKeepAlive extends Service {
 
 		Notification notification = new Notification(R.drawable.ic_launcher, getString(R.string.app_name),
 				System.currentTimeMillis());
-		Intent intent2 = new Intent(this, LocationActivity.class);
+		Intent intent2 = new Intent(this, LocationRecordActivity.class);
 
 		PendingIntent pendingintent = PendingIntent.getActivity(this, 0, intent2, 0);
 		notification.setLatestEventInfo(this, "GPS采点模块", "Running...", pendingintent);
@@ -166,7 +166,7 @@ public class LoncationKeepAlive extends Service {
 					sb.append("无法获取有效定位依据导致定位失败，一般是由于手机的原因，处于飞行模式下一般会造成这种结果，可以试着重启手机");
 				}
 
-				intent.setAction(LocationActivity.ACTION_UPDATEUI);
+				intent.setAction(LocationRecordActivity.ACTION_UPDATEUI);
 				intent.putExtra("count", sb.toString());
 				sendBroadcast(intent);
 

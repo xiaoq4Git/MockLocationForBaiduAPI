@@ -30,6 +30,7 @@
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION" />
 
     <application
         android:name="com.baidu.location.demo.LocationApplication"
@@ -39,6 +40,10 @@
         android:theme="@android:style/Theme.Black" >
         <service
             android:name="com.baidu.location.service.LoncationKeepAlive"
+            android:enabled="true" >
+        </service>
+        <service
+            android:name="com.baidu.location.service.MockService"
             android:enabled="true" >
         </service>
         <service
@@ -66,17 +71,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.baidu.location.demo.LocationActivity" >
+        <activity android:name="com.baidu.location.demo.LocationRecordActivity" >
         </activity>
-        <activity android:name="com.baidu.location.demo.LocationOption" >
+        <activity android:name="com.baidu.location.demo.MockActivity" >
         </activity>
-        <activity android:name="com.baidu.location.demo.LocationFilter" >
-        </activity>
-        <activity android:name="com.baidu.location.demo.NotifyActivity" >
+        <activity android:name="com.baidu.location.demo.GpsReplayActivity" >
         </activity>
         <activity android:name="com.baidu.location.demo.QuestActivity" >
-        </activity>
-        <activity android:name="com.baidu.location.demo.LocationAutoNotify" >
         </activity>
     </application>
 

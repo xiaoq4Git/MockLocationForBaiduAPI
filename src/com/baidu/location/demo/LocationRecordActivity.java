@@ -29,7 +29,7 @@ import android.widget.TextView;
  * @author baidu
  *
  */
-public class LocationActivity extends Activity {
+public class LocationRecordActivity extends Activity {
 	private SaveSDCardService saveSDCardService;
 	private TextView LocationResult;
 	private Button startLocation;
@@ -90,7 +90,7 @@ public class LocationActivity extends Activity {
 		startLocation.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Intent intent = new Intent(LocationActivity.this, LoncationKeepAlive.class);
+				Intent intent = new Intent(LocationRecordActivity.this, LoncationKeepAlive.class);
 				if (startLocation.getText().toString().equals(getString(R.string.startlocation))) {
 					startLocation.setText(getString(R.string.stoplocation));
 					intent.putExtra("FLAG_RUN", "START");
