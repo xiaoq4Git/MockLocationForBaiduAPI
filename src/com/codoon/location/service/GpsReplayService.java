@@ -40,11 +40,16 @@ public class GpsReplayService extends Service {
 	private LocationManager mLocationManager;
 	private static double LATITUDE = 0;
 	private static double LONGITUDE = 0;
+	private static double SEALEVEL = 0;
 	private static List<Double> latSendList = new ArrayList<Double>();
 	private static List<Double> lonSendList = new ArrayList<Double>();
+	private static List<Double> highSendList = new ArrayList<Double>();
 	private int count = 0;
-	private Random rad = new Random();
-	
+
+	public void setHighSendList(List<Double> highList) {
+		highSendList = highList;
+	}
+
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
@@ -117,6 +122,7 @@ public class GpsReplayService extends Service {
 		public void run() {
 			LATITUDE = latSendList.get(count);
 			LONGITUDE = lonSendList.get(count);
+			SEALEVEL = highSendList.get(count);
 			setMockLocation(LocationManager.GPS_PROVIDER);
 			setMockLocation(LocationManager.NETWORK_PROVIDER);
 			handler.postDelayed(update_thread, UPDATE_TIME);
@@ -137,7 +143,7 @@ public class GpsReplayService extends Service {
 		Location newLocation = new Location(PROVIDER);
 		newLocation.setLatitude(LATITUDE);
 		newLocation.setLongitude(LONGITUDE);
-		newLocation.setAltitude(500 + rad.nextFloat() * 50);
+		newLocation.setAltitude(SEALEVEL);
 		newLocation.setAccuracy(50.f);
 		newLocation.setElapsedRealtimeNanos(SystemClock.elapsedRealtimeNanos());
 		newLocation.setTime(System.currentTimeMillis());

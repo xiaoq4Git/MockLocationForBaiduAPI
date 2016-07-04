@@ -19,6 +19,7 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.IBinder;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -33,6 +34,7 @@ public class GpsReplayActivity extends Activity {
 
 	private List<Double> latList = new ArrayList<Double>();
 	private List<Double> lonList = new ArrayList<Double>();
+	private List<Double> highList = new ArrayList<Double>();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +66,7 @@ public class GpsReplayActivity extends Activity {
 	};
 
 	private class MySetOnClickListener implements OnClickListener {
-
+		String context;
 		@Override
 		public void onClick(View v) {
 			new Thread(new Runnable() {
@@ -76,34 +78,49 @@ public class GpsReplayActivity extends Activity {
 							FileInputStream inputStream = new FileInputStream(file);
 							DataInputStream dataIO = new DataInputStream(inputStream);
 							Pattern pat = Pattern.compile("lat=\"(.+)\".lon=\"(.+)\"");
-							StringBuffer sBuffer = new StringBuffer();
+							Pattern high = Pattern.compile("<ele>(.+)</ele>");
 							String strLine = null;
 							while((strLine =  dataIO.readLine()) != null){
-								Matcher m = pat.matcher(strLine);
-								if (m.find()) {
-									latList.add(Double.parseDouble(m.group(1)));
-									lonList.add(Double.parseDouble(m.group(2)));
+								Matcher m1 = pat.matcher(strLine);
+								if (m1.find()) {
+									latList.add(Double.parseDouble(m1.group(1)));
+									lonList.add(Double.parseDouble(m1.group(2)));
+								}
+								Matcher m2 = high.matcher(strLine);
+								if (m2.find()) {
+									highList.add(Double.parseDouble(m2.group(1)));
 								}
 							}
 							bindGpsService.setLatSendList(latList);
 							bindGpsService.setLonSendList(lonList);
+							bindGpsService.setHighSendList(highList);
 							bindGpsService.startMockLocation();
-							Toast.makeText(GpsReplayActivity.this, "读取GPS路线成功，开始回放..", Toast.LENGTH_LONG).show();
+							context = "读取GPS路线成功，开始回放..";
 							
 							Intent home = new Intent(Intent.ACTION_MAIN);
 							home.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 							home.addCategory(Intent.CATEGORY_HOME);
 							startActivity(home);
 						} catch (Exception e) {
-							Toast.makeText(GpsReplayActivity.this, "读取失败", Toast.LENGTH_SHORT).show();
+							context = "读取失败";
 						}
 					} else {
 						// 此时SDcard不存在或者不能进行读写操作的
-						Toast.makeText(GpsReplayActivity.this, "此时SDcard不存在或者不能进行读写操作", Toast.LENGTH_SHORT).show();
+						context = "此时SDcard不存在或者不能进行读写操作的";
 					}
 				}
 			}).start();
-
+			while(true){
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				if(context != null){
+					Toast.makeText(GpsReplayActivity.this, context,Toast.LENGTH_SHORT).show();
+					break;
+				}
+			}
 		}
 	}
 }

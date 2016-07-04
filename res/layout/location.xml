@@ -17,6 +17,6 @@
         android:layout_weight="2.89"
         android:scrollbars="vertical"
         android:textColor="#ffffffff"
-        android:text=" "/>
+        android:text="GPS采点文件存放于/storage/sdcard0/Gpsdata/record/下，以当天年月日命名"/>
 
 </LinearLayout>
