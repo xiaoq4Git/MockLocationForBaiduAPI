@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.baidu.baidulocationdemo"
+    package="com.codoon.baidulocationdemo"
     android:versionCode="623"
     android:versionName="6.2.3" >
 
@@ -8,6 +8,10 @@
         android:minSdkVersion="15"
         android:targetSdkVersion="23" />
 
+    <!-- 在SDCard中创建与删除文件权限 -->
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
+    <!-- 往SDCard写入数据权限 -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" >
     </uses-permission>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" >
@@ -33,17 +37,21 @@
     <uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION" />
 
     <application
-        android:name="com.baidu.location.demo.LocationApplication"
+        android:name="com.codoon.location.demo.LocationApplication"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@android:style/Theme.Black" >
         <service
-            android:name="com.baidu.location.service.LoncationKeepAlive"
+            android:name="com.codoon.location.service.LoncationKeepAlive"
             android:enabled="true" >
         </service>
         <service
-            android:name="com.baidu.location.service.MockService"
+            android:name="com.codoon.location.service.MockService"
+            android:enabled="true" >
+        </service>
+        <service
+            android:name="com.codoon.location.service.GpsReplayService"
             android:enabled="true" >
         </service>
         <service
@@ -63,7 +71,7 @@
 
         <!-- meta-data需要写在application中 -->
         <activity
-            android:name="com.baidu.location.demo.MainActivity"
+            android:name="com.codoon.location.demo.MainActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -71,13 +79,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.baidu.location.demo.LocationRecordActivity" >
+        <activity android:name="com.codoon.location.demo.LocationRecordActivity" >
         </activity>
-        <activity android:name="com.baidu.location.demo.MockActivity" >
+        <activity android:name="com.codoon.location.demo.MockActivity" >
         </activity>
-        <activity android:name="com.baidu.location.demo.GpsReplayActivity" >
+        <activity android:name="com.codoon.location.demo.GpsReplayActivity" >
         </activity>
-        <activity android:name="com.baidu.location.demo.QuestActivity" >
+        <activity android:name="com.codoon.location.demo.QuestActivity" >
         </activity>
     </application>
 

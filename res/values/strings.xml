@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">咕咚测试工具</string>
+    <string name="app_name">咕咚GPS测试辅助工具</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="startlocation">开始定位</string>
     <string name="stoplocation">停止定位</string>
     <string name="error_code_desc">错误码说明</string>
     <string name="diy_call_back">自定义回调</string>
+    <string name="file_gps_detail">	文件存放于/storage/sdcard0/Gpsdata/mock/下，将待回放的GPS路径记录文件拷贝于此目录下，在编辑框填写完整的文件名（含后缀）</string>
     <string name="diy_call_back_ps">ps:网络定位由于精度低于gps，计算距离会有部分偏差</string>
     <string name="qa_title">常见问题</string>
     <string name="hight_accuracy_desc">高精度定位模式下，会同时使用GPS、Wifi和基站定位，返回的是当前条件下精度最好的定位结果</string>

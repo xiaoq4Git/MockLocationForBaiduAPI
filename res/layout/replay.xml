@@ -23,7 +23,7 @@
         android:layout_alignBottom="@+id/textView1"
         android:layout_alignParentRight="true"
         android:ems="10"
-        android:text="Sichuan.gpx" >
+        android:text="2016-7-.txt" >
     </EditText>
 
     <Button
@@ -34,5 +34,25 @@
         android:layout_below="@+id/et2"
         android:layout_marginTop="22dp"
         android:text="GPS线路回放" />
+
+    <TextView
+        android:id="@+id/error_code_title"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/error_code_content"
+        android:layout_below="@+id/replay"
+        android:layout_marginTop="28dp"
+        android:text="轨迹文件名称说明："
+        android:textSize="@dimen/main_title_size" />
+
+    <TextView
+        android:id="@+id/error_code_content"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/replay"
+        android:layout_below="@+id/error_code_title"
+        android:layout_marginTop="28dp"
+        android:text="@string/file_gps_detail"
+        android:textSize="@dimen/main_title_size" />
 
 </RelativeLayout>
