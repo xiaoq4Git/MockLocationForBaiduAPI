@@ -26,7 +26,7 @@ public class MockService extends Service {
 	private static double longitude = 0;
 	private static double unit = 0;
 	private static double paceValue = 0.000035;
-	private static final int UPDATE_TIME = 1000;
+	private static final int UPDATE_TIME = 2000;
 	private Random rad;
 	
 	public void init() {

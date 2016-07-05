@@ -202,6 +202,7 @@ public class LocationRecordActivity extends Activity {
 					} else {
 						sb1.append("\t\t<ele>" + location.getAltitude() + "</ele>\n");
 					}
+					sb1.append("\t\t<time>" + location.getTime() + "</time>\n");
 					sb1.append("\t</wpt>\n");
 
 					cachedThreadPool.execute(new Runnable() {

@@ -29,7 +29,7 @@ import android.widget.Toast;
 public class GpsReplayActivity extends Activity {
 	private Button gpsReplay;
 	private EditText gpsFileName;
-	private GpsReplayService bindGpsService;
+	private GpsReplayService replayGpsService;
 	private static final String FILENAME = "/Gpsdata/mock/";
 
 	private List<Double> latList = new ArrayList<Double>();
@@ -61,7 +61,7 @@ public class GpsReplayActivity extends Activity {
 		@Override
 		public void onServiceConnected(ComponentName name, IBinder service) {
 			GpsReplayService.MyBinder binder = (GpsReplayService.MyBinder) service;
-			bindGpsService = binder.getService1();
+			replayGpsService = binder.getService1();
 		}
 	};
 
@@ -91,10 +91,10 @@ public class GpsReplayActivity extends Activity {
 									highList.add(Double.parseDouble(m2.group(1)));
 								}
 							}
-							bindGpsService.setLatSendList(latList);
-							bindGpsService.setLonSendList(lonList);
-							bindGpsService.setHighSendList(highList);
-							bindGpsService.startMockLocation();
+							replayGpsService.setLatSendList(latList);
+							replayGpsService.setLonSendList(lonList);
+							replayGpsService.setHighSendList(highList);
+							replayGpsService.startMockLocation();
 							context = "读取GPS路线成功，开始回放..";
 							
 							Intent home = new Intent(Intent.ACTION_MAIN);
