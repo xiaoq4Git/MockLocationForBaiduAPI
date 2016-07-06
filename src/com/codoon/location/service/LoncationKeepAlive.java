@@ -179,6 +179,7 @@ public class LoncationKeepAlive extends Service {
 				if (location.getLatitude() != lastKnowLat && location.getLongitude() != lastKnowLon) {
 					sb1.append(
 							"\t<wpt lat=\"" + location.getLatitude() + "\" lon=\"" + location.getLongitude() + "\">\n");
+					sb1.append("\t\t<time>" + location.getTime() + "</time>\n");
 					if (location.getAltitude() < 1) {
 						Random rad = new Random();
 						sb1.append("\t\t<ele>" + (rad.nextInt(100) + 300) + "</ele>\n");
